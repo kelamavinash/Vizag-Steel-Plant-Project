@@ -1,0 +1,146 @@
+{{ template "header" . }}
+<div class="max-w-6xl mx-auto py-6 space-y-6">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-white flex items-center">
+            <svg class="w-8 h-8 mr-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            User Management
+        </h1>
+        <p class="mt-2 text-sm text-white/80">Manage system users, roles, and access permissions.</p>
+    </div>
+
+    <!-- 4 Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Card 1 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center">
+            <div class="bg-blue-50 p-3 rounded-lg mr-4">
+                <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Total Users</p>
+                <p class="text-2xl font-bold text-gray-900">{{ .TotalUsers }}</p>
+            </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center">
+            <div class="bg-green-50 p-3 rounded-lg mr-4">
+                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Active Sessions</p>
+                <p class="text-2xl font-bold text-gray-900">{{ .ActiveUsers }}</p>
+            </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center">
+            <div class="bg-orange-50 p-3 rounded-lg mr-4">
+                <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Departments</p>
+                <p class="text-2xl font-bold text-gray-900">{{ .Departments }}</p>
+            </div>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center">
+            <div class="bg-purple-50 p-3 rounded-lg mr-4">
+                <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Admin Users</p>
+                <p class="text-2xl font-bold text-gray-900">{{ .AdminUsers }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form & Table Container -->
+    <div class="glass-card overflow-hidden">
+        
+        <!-- Add New User Form -->
+        <div class="bg-white p-6 border-b border-gray-100">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center mb-6">
+                <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                Add New User
+            </h2>
+            <form action="/users/add" method="POST" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Employee Number</label>
+                    <input type="text" name="emp_no" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Name</label>
+                    <input type="text" name="emp_name" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Password</label>
+                    <input type="password" name="password" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Department</label>
+                    <input type="text" name="dept" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700">
+                </div>
+                <div class="md:col-span-1 hidden">
+                    <input type="hidden" name="designation" value="User">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Role</label>
+                    <select name="role" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700">
+                        <option value="dept_user">Dept User</option>
+                        <option value="dept_admin">Dept Admin</option>
+                        <option value="sys_admin">System Admin</option>
+                    </select>
+                </div>
+                
+                <div class="md:col-span-5 mt-2 flex justify-end border-t border-gray-100 pt-4">
+                    <button type="submit" class="inline-flex justify-center items-center py-2 px-6 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-[#1e3a5f] hover:bg-[#152a46] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a5f] transition-colors">
+                        Add User
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-[#1e3a5f]">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Emp No</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Department</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Role</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-100">
+                    {{ range .Users }}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-medium">{{ .EmpNo }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">{{ .EmpName }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ .Dept }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <select name="role" hx-post="/users/role" hx-vals='{"emp_no": "{{ .EmpNo }}"}' hx-swap="none" class="block w-full pl-3 pr-8 py-1 text-sm border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#1e3a5f] focus:border-[#1e3a5f] rounded shadow-sm bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors">
+                                <option value="sys_admin" {{ if eq .Role "sys_admin" }}selected{{ end }}>System Admin</option>
+                                <option value="dept_admin" {{ if eq .Role "dept_admin" }}selected{{ end }}>Dept Admin</option>
+                                <option value="dept_user" {{ if eq .Role "dept_user" }}selected{{ end }}>Dept User</option>
+                                <option value="ppm_admin" {{ if eq .Role "ppm_admin" }}selected{{ end }}>PPM Admin</option>
+                                <option value="ppm_user" {{ if eq .Role "ppm_user" }}selected{{ end }}>PPM User</option>
+                            </select>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button hx-post="/users/toggle" hx-vals='{"emp_no": "{{ .EmpNo }}"}' hx-swap="outerHTML" 
+                                    class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full shadow-sm transition-colors {{ if .Active }}text-green-800 bg-green-100{{ else }}text-red-800 bg-red-100{{ end }}">
+                                {{ if .Active }}
+                                Active
+                                {{ else }}
+                                Inactive
+                                {{ end }}
+                            </button>
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{ template "footer" . }}

@@ -1,0 +1,116 @@
+{{ template "header" . }}
+<div class="max-w-6xl mx-auto py-6 space-y-6">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-white flex items-center">
+            <svg class="w-8 h-8 mr-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Delay Reports
+        </h1>
+        <p class="mt-2 text-sm text-white/80">Analyze historical delay data and generate detailed reports.</p>
+    </div>
+
+    <!-- 4 Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Card 1 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center">
+            <div class="bg-red-50 p-3 rounded-lg mr-4">
+                <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path></svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Total Delays</p>
+                <p class="text-2xl font-bold text-gray-900">{{ .TotalDelays }}</p>
+            </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center">
+            <div class="bg-orange-50 p-3 rounded-lg mr-4">
+                <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Total Hours Lost</p>
+                <p class="text-2xl font-bold text-gray-900">{{ .TotalHours }}</p>
+            </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center">
+            <div class="bg-green-50 p-3 rounded-lg mr-4">
+                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Availability</p>
+                <p class="text-2xl font-bold text-gray-900">{{ .Availability }}</p>
+            </div>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center">
+            <div class="bg-blue-50 p-3 rounded-lg mr-4">
+                <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Active Issues</p>
+                <p class="text-2xl font-bold text-gray-900">{{ .ActiveIssues }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar and Table -->
+    <div class="glass-card overflow-hidden">
+        
+        <!-- Filter Bar -->
+        <div class="bg-white p-4 border-b border-gray-100 flex items-end space-x-4">
+            <form id="reportForm" hx-get="/api/reports/data" hx-target="#reportTableBody" class="flex-grow flex space-x-4 items-end">
+                <div class="w-1/4">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Shop</label>
+                    <select name="shop_desc" class="block w-full pl-3 pr-8 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700">
+                        <option value="">All Shops</option>
+                        {{ range .Shops }}
+                        <option value="{{ . }}">{{ . }}</option>
+                        {{ end }}
+                    </select>
+                </div>
+                <div class="w-1/4">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">From Date</label>
+                    <input type="date" name="from_date" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700">
+                </div>
+                <div class="w-1/4">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">To Date</label>
+                    <input type="date" name="to_date" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700">
+                </div>
+                <div class="w-1/4">
+                    <button type="submit" class="w-full inline-flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-[#1e3a5f] hover:bg-[#152a46] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a5f] transition-colors h-[38px]">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                        Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-[#1e3a5f]">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Shop</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Equipment</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Sub Equip</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Agency</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">From</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">To</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Duration (Hrs)</th>
+                    </tr>
+                </thead>
+                <tbody id="reportTableBody" class="bg-white divide-y divide-gray-100" hx-get="/api/reports/data" hx-trigger="load">
+                    <tr>
+                        <td colspan="7" class="px-6 py-12 text-center bg-white">
+                            <div class="flex flex-col items-center justify-center">
+                                <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                <p class="text-sm font-medium text-gray-500">Select filters and click Apply to load data</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{ template "footer" . }}

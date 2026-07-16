@@ -1,0 +1,153 @@
+{{ template "header" . }}
+<div class="max-w-4xl mx-auto py-6 space-y-6">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-white flex items-center">
+            <svg class="w-8 h-8 mr-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            Delay Entry
+        </h1>
+        <p class="mt-2 text-sm text-white/80">Record production delay data for analysis and reporting.</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="glass-card p-8 relative">
+        <h2 class="text-lg font-bold text-gray-900 flex items-center mb-6 pb-4 border-b border-gray-100">
+            <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+            New Delay Record
+        </h2>
+        
+        <form id="delayForm" action="/entry" method="POST">
+            <!-- Shift Auto-fill Buttons -->
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Shift Auto-fill</label>
+                <div class="flex space-x-2">
+                    <button type="button" class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-[#1e3a5f] text-xs font-bold rounded shadow-sm transition flex-1" onclick="setShift('A')">A Shift (06-14)</button>
+                    <button type="button" class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-[#1e3a5f] text-xs font-bold rounded shadow-sm transition flex-1" onclick="setShift('B')">B Shift (14-22)</button>
+                    <button type="button" class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-[#1e3a5f] text-xs font-bold rounded shadow-sm transition flex-1" onclick="setShift('C')">C Shift (22-06)</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Row 1 -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Shop</label>
+                    <select id="shop_desc" name="shop_desc" required class="block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm rounded-md shadow-sm border transition-all"
+                            hx-get="/api/equipment" hx-target="#eqpt_name" hx-swap="innerHTML" hx-trigger="change">
+                        <option value="">Select Shop</option>
+                        {{ range .Shops }}
+                        <option value="{{ . }}">{{ . }}</option>
+                        {{ end }}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Equipment</label>
+                    <select id="eqpt_name" name="eqpt_name" required class="block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm rounded-md shadow-sm border transition-all disabled:opacity-50"
+                            hx-get="/api/subequipment" hx-target="#sub_eqpt_name" hx-swap="innerHTML" hx-include="#shop_desc" hx-trigger="change">
+                        <option value="">Select Equipment</option>
+                    </select>
+                </div>
+
+                <!-- Row 2 -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Sub Equipment</label>
+                    <select id="sub_eqpt_name" name="sub_eqpt_name" class="block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm rounded-md shadow-sm border transition-all disabled:opacity-50">
+                        <option value="">Select Sub Equipment</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Agency</label>
+                    <select name="agency" required class="block w-full pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm rounded-md shadow-sm border transition-all">
+                        <option value="operations">Operations</option>
+                        <option value="mechanical">Mechanical</option>
+                        <option value="electrical">Electrical</option>
+                        <option value="shutdown">Shutdown</option>
+                    </select>
+                </div>
+
+                <!-- Row 3 -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Delay From</label>
+                    <div class="flex space-x-2">
+                        <input type="date" id="from_date" name="from_date" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700" onchange="calcDuration()">
+                        <input type="time" id="from_time" name="from_time" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700" onchange="calcDuration()">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Delay Upto</label>
+                    <div class="flex space-x-2">
+                        <input type="date" id="upto_date" name="upto_date" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700" onchange="calcDuration()">
+                        <input type="time" id="upto_time" name="upto_time" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm text-gray-700" onchange="calcDuration()">
+                    </div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="md:col-span-1">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Duration (Hours)</label>
+                    <input type="text" id="delay_duration_display" disabled class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-600 sm:text-sm cursor-not-allowed">
+                    <input type="hidden" id="hidden_duration" name="delay_duration_val">
+                </div>
+                <div class="hidden md:block"></div>
+
+                <!-- Row 5 -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+                    <textarea name="delay_desc" rows="4" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#1e3a5f] focus:border-[#1e3a5f] sm:text-sm transition-all text-gray-700" placeholder="Describe the delay event..."></textarea>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end">
+                <button type="submit" class="inline-flex justify-center items-center py-2 px-6 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-[#1e3a5f] hover:bg-[#152a46] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a5f] transition-colors">
+                    Save Record
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function setShift(shift) {
+        const today = new Date();
+        const dateStr = today.toISOString().split('T')[0];
+        document.getElementById('from_date').value = dateStr;
+        
+        if (shift === 'A') {
+            document.getElementById('from_time').value = '06:00';
+            document.getElementById('upto_time').value = '14:00';
+        } else if (shift === 'B') {
+            document.getElementById('from_time').value = '14:00';
+            document.getElementById('upto_time').value = '22:00';
+        } else if (shift === 'C') {
+            document.getElementById('from_time').value = '22:00';
+            document.getElementById('upto_time').value = '06:00';
+        }
+        document.getElementById('upto_date').value = dateStr;
+        calcDuration();
+    }
+
+    function calcDuration() {
+        const fromD = document.getElementById('from_date').value;
+        const fromT = document.getElementById('from_time').value;
+        const uptoD = document.getElementById('upto_date').value;
+        const uptoT = document.getElementById('upto_time').value;
+
+        if (fromD && fromT && uptoD && uptoT) {
+            const start = new Date(fromD + 'T' + fromT);
+            let end = new Date(uptoD + 'T' + uptoT);
+            
+            if (end < start) {
+                end.setDate(end.getDate() + 1);
+            }
+
+            const diffMins = Math.floor((end - start) / 60000);
+            if (diffMins >= 0) {
+                const hours = (diffMins / 60).toFixed(1);
+                document.getElementById('delay_duration_display').value = hours;
+                document.getElementById('hidden_duration').value = diffMins; // we keep mins in backend as per models
+            }
+        }
+    }
+</script>
+{{ template "footer" . }}
